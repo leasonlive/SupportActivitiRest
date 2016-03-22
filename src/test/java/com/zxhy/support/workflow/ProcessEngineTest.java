@@ -55,6 +55,10 @@ public class ProcessEngineTest {
 		this.processEngine.startProcess("yingyezhizhao:1:35008", "testLTD2");
 	}
 	@Test
+	public void startProcessByKey(){
+		this.processEngine.startProcessByKey("yingyezhizhao", "start by key test");
+	}
+	@Test
 	public void getMyTask(){
 		//this.processEngine.getMyTask("gonzo");
 		this.processEngine.getMyTask("kermit");

@@ -50,11 +50,18 @@ public interface ProcessEngine {
 	/**
 	 * 启动一个业务流程
 	 * 
-	 * @param processKey  流程Key
+	 * @param processDefinitionId  流程定义ID
 	 * @param businessKey 业务Key
+	 * @return 流程实例ID
 	 */
-	public void startProcess(String processKey, String businessKey);
-
+	public String startProcess(String processDefinitionId, String businessKey);
+	/**
+	 * 启动一个业务流程
+	 * @param processDefinitionKey 流程定义Key
+	 * @param businessKey
+	 * 	@return 流程实例ID
+	 */
+	public String startProcessByKey(String processDefinitionKey, String businessKey);
 	/**
 	 * 得到所有待办任务
 	 * 

@@ -157,15 +157,26 @@ public class ProcessEngineImpl implements ProcessEngine {
 			
 	      
 	}
-	public void startProcess(String processKey, String businessKey) {
+	public String startProcess(String processDefinitionId, String businessKey) {
 		String serviceBase = this.baseURI + "/runtime/process-instances";
 		JSONObject json = new JSONObject();
-		json.put("processDefinitionId", processKey);
+		json.put("processDefinitionId", processDefinitionId);
 		json.put("businessKey", businessKey);
 	    String resp = this.getRestString(serviceBase, HttpMethod.POST, json);
-	   log.debug("resp:" + resp);
+	   return new JSONObject(resp).getString("id");
 	      
 	}
+	public String startProcessByKey(String processDefinitionKey, String businessKey) {
+		String serviceBase = this.baseURI + "/runtime/process-instances";
+		JSONObject json = new JSONObject();
+		json.put("processDefinitionKey", processDefinitionKey);
+		json.put("businessKey", businessKey);
+//		json.put("tenantId", "testtenantId");
+		json.put("variables", new JSONArray());
+	    String resp = this.getRestString(serviceBase, HttpMethod.POST, json);
+	    return new JSONObject(resp).getString("id");
+	}
+	
 
 	public List getMyTask(String userId) {
 		String serviceBase = this.baseURI + "/runtime/tasks?assignee="+userId;
