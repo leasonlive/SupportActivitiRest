@@ -1,2 +1,6 @@
 # SupportActivitiRest
-activiti在使用过程中的一些问题和修改方法汇总
+使用rest方式连接activiti工作流，activiti作为独立的工作流服务器。
+activiti已经提供了rest方法，可以用ajax的json进行访问，由于跨域的问题，因此才做了这个rest的java调用实现。
+使用方法：
+1、引入rest封装包workflow
+2、用ajax调用rest中的action方法即可实现和activiti服务器的通讯
