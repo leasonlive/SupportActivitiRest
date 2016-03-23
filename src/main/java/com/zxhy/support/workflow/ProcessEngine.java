@@ -2,6 +2,10 @@ package com.zxhy.support.workflow;
 
 import java.util.List;
 
+import org.activiti.engine.impl.util.json.JSONArray;
+
+import com.zxhy.support.workflow.impl.TaskInfo;
+
 /**
  * 流程引擎
  * 在使用activiti的时候需要1、加入oracle驱动、2修改db.property文件、3在activiti-custom-context.xml的engine配置中增加<property name="databaseSchema" value="XJLFLOW"/><br>
@@ -52,22 +56,24 @@ public interface ProcessEngine {
 	 * 
 	 * @param processDefinitionId  流程定义ID
 	 * @param businessKey 业务Key
+	 * @param variables 启动流程实例变量
 	 * @return 流程实例ID
 	 */
-	public String startProcess(String processDefinitionId, String businessKey);
+	public String startProcess(String processDefinitionId, String businessKey,JSONArray variables);
 	/**
 	 * 启动一个业务流程
 	 * @param processDefinitionKey 流程定义Key
 	 * @param businessKey
+	 * @param variables 启动流程实例变量
 	 * 	@return 流程实例ID
 	 */
-	public String startProcessByKey(String processDefinitionKey, String businessKey);
+	public String startProcessByKey(String processDefinitionKey, String businessKey,JSONArray variables);
 	/**
 	 * 得到所有待办任务
 	 * 
 	 * @return
 	 */
-	public List getMyTask(String userId);
+	public List<TaskInfo> getMyTask(String userId);
 	/**
 	 * 可以认领的任务
 	 * @param userId
@@ -90,11 +96,17 @@ public List getCandidaTask(String userId);
 	 * 
 	 * @param taskId
 	 */
-	public void completeTask(String taskId);
+	public void completeTask(String taskId, JSONArray variables);
 	/**
 	 * 得到我参与过的任务
 	 * @param userId
 	 * @return
 	 */
 	public List getHistoryTask(String userId);
+	/**
+	 * 增加一个用户到realNameGroup
+	 * 
+	 */
+	public void addUser(String id, String firstName, String lastName, String email,String password);
+	public void addUserToGroup(String userId, String groupId);
 }

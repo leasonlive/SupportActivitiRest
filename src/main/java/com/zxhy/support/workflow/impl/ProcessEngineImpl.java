@@ -157,42 +157,48 @@ public class ProcessEngineImpl implements ProcessEngine {
 			
 	      
 	}
-	public String startProcess(String processDefinitionId, String businessKey) {
+	public String startProcess(String processDefinitionId, String businessKey,JSONArray variables) {
 		String serviceBase = this.baseURI + "/runtime/process-instances";
 		JSONObject json = new JSONObject();
 		json.put("processDefinitionId", processDefinitionId);
 		json.put("businessKey", businessKey);
+		json.put("variables", variables);
 	    String resp = this.getRestString(serviceBase, HttpMethod.POST, json);
 	   return new JSONObject(resp).getString("id");
 	      
 	}
-	public String startProcessByKey(String processDefinitionKey, String businessKey) {
+	public String startProcessByKey(String processDefinitionKey, String businessKey,JSONArray variables) {
 		String serviceBase = this.baseURI + "/runtime/process-instances";
 		JSONObject json = new JSONObject();
 		json.put("processDefinitionKey", processDefinitionKey);
 		json.put("businessKey", businessKey);
 //		json.put("tenantId", "testtenantId");
-		json.put("variables", new JSONArray());
+		json.put("variables", variables);
 	    String resp = this.getRestString(serviceBase, HttpMethod.POST, json);
+	    log.debug("processInstance:" + resp);
 	    return new JSONObject(resp).getString("id");
 	}
 	
 
-	public List getMyTask(String userId) {
+	public List<TaskInfo> getMyTask(String userId) {
 		String serviceBase = this.baseURI + "/runtime/tasks?assignee="+userId;
 	    String resp = this.getRestString(serviceBase, HttpMethod.GET, null);
 	    log.debug("getMyTask:" + resp);
-		return null;
+		JSONObject json = new JSONObject(resp);
+		JSONArray data = json.getJSONArray("data");
+		List<TaskInfo> list = new ArrayList<TaskInfo>();
+		for (int i = 0; i < data.length(); i++){
+			list.add(new TaskInfo(data.getJSONObject(i)));
+		}
+		return list;
 	}
 	public List getCandidaTask(String userId) {
-		String serviceBase =this.baseURI + "/runtime/tasks?candidaUser="+userId;
+		String serviceBase =this.baseURI + "/query/tasks";
 		JSONObject json = new JSONObject();
-//		json.put("processDefinitionId", processKey);
-//		json.put("businessKey", businessKey);
-//		json.put("variables", new ArrayList());
-		String resp = this.getRestString(serviceBase, HttpMethod.GET, json);
+		json.put("candidateUser", userId);
+		String resp = this.getRestString(serviceBase, HttpMethod.POST, json);
 	    log.debug("candida:" + resp);
-		
+		JSONObject jsonTask  = new JSONObject(resp);
 		return null;
 	}
 
@@ -225,22 +231,44 @@ public class ProcessEngineImpl implements ProcessEngine {
 	    return null;
 	}
 	public void claimTask(String taskId, String userId) {
-		// TODO Auto-generated method stub
-		
+		String serviceBase =  this.baseURI+ "/runtime/tasks/"+taskId;
+		JSONObject json = new JSONObject();
+		json.put("action", "claim");
+		json.put("assignee", userId);
+		this.getRestString(serviceBase, HttpMethod.POST, json);
 	}
 
-	public void completeTask(String taskId) {
+	public void completeTask(String taskId,JSONArray variables) {
 		String serviceBase =  this.baseURI+ "/runtime/tasks/"+taskId;
 		JSONObject json = new JSONObject();
 		json.put("action", "complete");
-		json.put("variables", new JSONArray());
+		json.put("variables", variables);
 		String resp = this.getRestString(serviceBase, HttpMethod.POST, json);
-		log.debug("resp:" + resp);;
+		log.debug("resp:" + resp);
 	}
 
 	public List getHistoryTask(String userId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	public void addUser(String id, String firstName, String lastName, String email,String password){
+		
+		String serviceBase =  this.baseURI+ "/identity/users";
+		JSONObject json = new JSONObject();
+		json.put("id", id);
+		json.put("firstName", firstName);
+		json.put("lastName", lastName);
+		json.put("email", email);
+		json.put("password", password);
+		String resp = this.getRestString(serviceBase, HttpMethod.POST, json);
+		log.debug("add user resp:" + resp);
+	}
+	public void addUserToGroup(String userId, String groupId) {
+		String serviceBase =  this.baseURI+ "/identity/groups/" + groupId + "/members";
+		JSONObject json = new JSONObject();
+		json.put("userId", userId);
+		String resp = this.getRestString(serviceBase, HttpMethod.POST, json);
+		log.debug("add user to Group resp:" + resp);
 	}
 
 	

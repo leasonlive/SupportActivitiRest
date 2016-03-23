@@ -1,7 +1,9 @@
 package com.zxhy.support.workflow;
 
 import java.io.File;
+import java.util.List;
 
+import org.activiti.engine.impl.util.json.JSONArray;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
@@ -11,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.zxhy.support.workflow.impl.TaskInfo;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:ApplicationContext.xml" })
+@ContextConfiguration(locations = { "classpath:ApplicationContextWorkflow.xml" })
 public class ProcessEngineTest {
 	@Autowired
 	ProcessEngine processEngine;
@@ -52,11 +56,11 @@ public class ProcessEngineTest {
 	}
 	@Test
 	public void startProcess(){
-		this.processEngine.startProcess("yingyezhizhao:1:35008", "testLTD2");
+		this.processEngine.startProcess("yingyezhizhao:1:35008", "testLTD2", null);
 	}
 	@Test
 	public void startProcessByKey(){
-		this.processEngine.startProcessByKey("yingyezhizhao", "start by key test");
+		this.processEngine.startProcessByKey("yingyezhizhao", "start by key test", null);
 	}
 	@Test
 	public void getMyTask(){
@@ -73,7 +77,32 @@ public class ProcessEngineTest {
 	}
 	@Test
 	public void completeTask(){
-		this.processEngine.completeTask("37508");
+		this.processEngine.completeTask("37508", null);
 		//完成任务
+	}
+	@Test
+	public void addUser(){
+		this.processEngine.addUser("leasonlive", "leason", "live", "jarden@126.com", "123456");
+	}
+	@Test
+	public void addUserToGroup(){
+		this.processEngine.addUserToGroup("leasonlive", "realName");
+	}
+	@Test
+	public void startRealName(){
+		JSONArray json = new JSONArray();
+		
+		JSONObject businessKey = new JSONObject();
+		businessKey.put("name", "businessKey");
+		businessKey.put("value", "leasonlive");
+		json.put(businessKey);
+		this.processEngine.startProcessByKey("realNameAuth", "leasonlive", json);
+	}
+	@Test
+	public void registerFinish(){
+		List<TaskInfo> taskList = this.processEngine.getMyTask("leasonlive");
+		for (TaskInfo taskInfo : taskList) {
+			this.processEngine.completeTask(taskInfo.getTaskId(), null);
+		}
 	}
 }
