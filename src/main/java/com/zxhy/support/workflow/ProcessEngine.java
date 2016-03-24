@@ -59,7 +59,7 @@ public interface ProcessEngine {
 	 * @param variables 启动流程实例变量
 	 * @return 流程实例ID
 	 */
-	public String startProcess(String processDefinitionId, String businessKey,JSONArray variables);
+	public String startProcessById(String processDefinitionId, String businessKey,JSONArray variables);
 	/**
 	 * 启动一个业务流程
 	 * @param processDefinitionKey 流程定义Key
@@ -70,10 +70,17 @@ public interface ProcessEngine {
 	public String startProcessByKey(String processDefinitionKey, String businessKey,JSONArray variables);
 	/**
 	 * 得到所有待办任务
-	 * 
+	 * @param userId 用户id
 	 * @return
 	 */
 	public List<TaskInfo> getMyTask(String userId);
+	/**
+	 * 得到待办任务列表
+	 * @param userId 用户id
+	 * @param processDefinitionKey 流程key
+	 * @return
+	 */
+	public List<TaskInfo> getMyTask(String userId, String processDefinitionKey);
 	/**
 	 * 可以认领的任务
 	 * @param userId

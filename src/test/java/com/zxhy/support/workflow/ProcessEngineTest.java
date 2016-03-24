@@ -55,8 +55,8 @@ public class ProcessEngineTest {
 			}
 	}
 	@Test
-	public void startProcess(){
-		this.processEngine.startProcess("yingyezhizhao:1:35008", "testLTD2", null);
+	public void startProcessById(){
+		this.processEngine.startProcessById("yingyezhizhao:1:35008", "testLTD2", null);
 	}
 	@Test
 	public void startProcessByKey(){
@@ -66,6 +66,11 @@ public class ProcessEngineTest {
 	public void getMyTask(){
 		//this.processEngine.getMyTask("gonzo");
 		this.processEngine.getMyTask("kermit");
+	}
+	@Test
+	public void getMyTaskWithKey(){
+		//this.processEngine.getMyTask("gonzo");
+		this.processEngine.getMyTask("135", "realNameAuth");
 	}
 	@Test
 	public void getCandidatTask(){
@@ -94,13 +99,13 @@ public class ProcessEngineTest {
 		
 		JSONObject businessKey = new JSONObject();
 		businessKey.put("name", "businessKey");
-		businessKey.put("value", "leasonlive");
+		businessKey.put("value", "130");
 		json.put(businessKey);
-		this.processEngine.startProcessByKey("realNameAuth", "leasonlive", json);
+		this.processEngine.startProcessByKey("realNameAuth", "130", json);
 	}
 	@Test
 	public void registerFinish(){
-		List<TaskInfo> taskList = this.processEngine.getMyTask("leasonlive");
+		List<TaskInfo> taskList = this.processEngine.getMyTask("130");
 		for (TaskInfo taskInfo : taskList) {
 			this.processEngine.completeTask(taskInfo.getTaskId(), null);
 		}
